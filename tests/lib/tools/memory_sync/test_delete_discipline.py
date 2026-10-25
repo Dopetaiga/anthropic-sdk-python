@@ -19,6 +19,9 @@ from pathlib import Path
 import pytest
 
 import anthropic.lib.tools._memories as memories_mod
+
+pytestmark = pytest.mark.skipif(os.name != "posix", reason="FileStore-backed sync suites refuse non-POSIX platforms")
+
 from anthropic.lib.tools._memories import MemoryDeleteMode, SessionMemoryStores
 
 from .conftest import Clock, run_sync, listing_interrupted_by
@@ -165,7 +168,7 @@ async def test_a_folder_destroyed_mid_sync_sends_no_deletes(tmp_path: Path, cloc
     assert server.files == {"a.md": "v1", "keep.md": "v1"}
 
 
-@pytest.mark.skipif(os.geteuid() == 0, reason="permission checks do not bind root")
+@pytest.mark.skipif(os.name == "posix" and os.geteuid() == 0, reason="permission checks do not bind root")
 @pytest.mark.asyncio()
 async def test_an_unreadable_subdirectory_fails_the_pass_instead_of_reading_as_deletions(
     tmp_path: Path, clock: Clock, caplog: pytest.LogCaptureFixture

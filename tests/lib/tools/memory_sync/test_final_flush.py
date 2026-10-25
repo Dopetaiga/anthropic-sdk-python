@@ -8,6 +8,7 @@ local removals, no pulls.
 
 from __future__ import annotations
 
+import os
 from typing import Any
 from pathlib import Path
 
@@ -15,6 +16,9 @@ import anyio
 import pytest
 
 import anthropic.lib.tools._memories as memories_mod
+
+pytestmark = pytest.mark.skipif(os.name != "posix", reason="FileStore-backed sync suites refuse non-POSIX platforms")
+
 from anthropic.lib.tools._memories import MARKER_PATH, SessionMemoryStores
 
 from .conftest import run_sync

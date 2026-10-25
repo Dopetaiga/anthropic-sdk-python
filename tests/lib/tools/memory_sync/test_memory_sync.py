@@ -18,6 +18,8 @@ from pathlib import Path
 
 import pytest
 
+pytestmark = pytest.mark.skipif(os.name != "posix", reason="FileStore-backed sync suites refuse non-POSIX platforms")
+
 from anthropic._compat import PYDANTIC_V1
 from anthropic.lib.tools import _memories as memories_mod
 from anthropic.lib.tools._memories import SessionMemoryError, SessionMemoryStores

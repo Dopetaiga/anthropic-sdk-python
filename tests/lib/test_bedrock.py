@@ -1,3 +1,4 @@
+import os
 import re
 import json
 import base64
@@ -66,12 +67,18 @@ def mock_aws_config(
     profiles: t.List[AwsConfigProfile],
     monkeypatch: t.Any,
 ) -> t.Iterable[None]:
-    with tempfile.NamedTemporaryFile(mode="w+", delete=True) as temp_file:
+    # `delete=True` keeps the handle open, and a second open of that file fails
+    # on Windows while botocore reads it; close and unlink explicitly instead.
+    temp_file = tempfile.NamedTemporaryFile(mode="w+", delete=False)
+    try:
         for profile in profiles:
             temp_file.write(profile_to_ini(profile))
         temp_file.flush()
-        monkeypatch.setenv("AWS_CONFIG_FILE", str(temp_file.name))
+        temp_file.close()
+        monkeypatch.setenv("AWS_CONFIG_FILE", temp_file.name)
         yield
+    finally:
+        os.unlink(temp_file.name)
 
 
 @pytest.mark.respx()

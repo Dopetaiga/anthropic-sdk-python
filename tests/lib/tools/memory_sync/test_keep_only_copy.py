@@ -6,9 +6,12 @@ Only an unedited file follows the remote delete off the disk.
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 import pytest
+
+pytestmark = pytest.mark.skipif(os.name != "posix", reason="FileStore-backed sync suites refuse non-POSIX platforms")
 
 from anthropic.lib.tools._memories import SessionMemoryStores
 

@@ -8,6 +8,7 @@ writer's edit, and a newer local edit must go out over it.
 
 from __future__ import annotations
 
+import os
 from typing import Any
 from pathlib import Path
 from contextlib import contextmanager
@@ -15,6 +16,8 @@ from collections.abc import Iterator
 
 import httpx2
 import pytest
+
+pytestmark = pytest.mark.skipif(os.name != "posix", reason="FileStore-backed sync suites refuse non-POSIX platforms")
 
 from anthropic import APIConnectionError
 from anthropic.lib.tools._memories import SessionMemoryStores

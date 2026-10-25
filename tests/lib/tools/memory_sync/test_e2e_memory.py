@@ -10,6 +10,7 @@ server; assertions read the server and the disk.
 
 from __future__ import annotations
 
+import os
 import json
 import time
 import base64
@@ -24,6 +25,9 @@ import pytest
 
 import anthropic.lib.tools._memories as memories_mod
 import anthropic.lib.environments._worker as worker_mod
+
+pytestmark = pytest.mark.skipif(os.name != "posix", reason="FileStore-backed sync suites refuse non-POSIX platforms")
+
 from anthropic.lib.tools._memories import MemoryDeleteMode
 from anthropic.lib.environments._worker import EnvironmentWorker
 

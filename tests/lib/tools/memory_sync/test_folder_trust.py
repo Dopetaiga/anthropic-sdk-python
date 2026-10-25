@@ -9,12 +9,16 @@ the folder as found and syncs nothing at all.
 
 from __future__ import annotations
 
+import os
 import shutil
 from pathlib import Path
 
 import pytest
 
 import anthropic.lib.tools._memories as memories_mod
+
+pytestmark = pytest.mark.skipif(os.name != "posix", reason="FileStore-backed sync suites refuse non-POSIX platforms")
+
 from anthropic.lib.tools._memories import MARKER_PATH, SessionMemoryStores
 
 from .conftest import Clock, run_sync, listing_interrupted_by

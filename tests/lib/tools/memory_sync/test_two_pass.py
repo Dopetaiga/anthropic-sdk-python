@@ -10,10 +10,13 @@ races a server-side delete — leaves the old state for the next sync.
 
 from __future__ import annotations
 
+import os
 from typing import Any
 from pathlib import Path
 
 import pytest
+
+pytestmark = pytest.mark.skipif(os.name != "posix", reason="FileStore-backed sync suites refuse non-POSIX platforms")
 
 from anthropic.lib.tools._memories import SessionMemoryStores
 
